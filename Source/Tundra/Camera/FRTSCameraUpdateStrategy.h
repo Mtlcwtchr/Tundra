@@ -1,13 +1,12 @@
 ﻿#pragma once
-#include "Tundra/TundraPlayerController.h"
 
-class RTSCameraUpdateStrategy
+class FRTSCameraUpdateStrategy
 {
 	class ATundraPlayerController* PlayerController;
 	
 public:
-	explicit RTSCameraUpdateStrategy(ATundraPlayerController* PlayerController);
-	virtual ~RTSCameraUpdateStrategy();
+	explicit FRTSCameraUpdateStrategy(ATundraPlayerController* PlayerController);
+	virtual ~FRTSCameraUpdateStrategy();
 	
 	virtual void UpdateCameraPosition(float DeltaTime) = 0;
 	
@@ -21,7 +20,7 @@ protected:
 	class ATundraPlayerController* GetPlayerController() const { return PlayerController; }
 };
 
-class FRTSCameraUpdateStrategyFree final : public RTSCameraUpdateStrategy
+class FRTSCameraUpdateStrategyFree final : public FRTSCameraUpdateStrategy
 {
 public:
 	explicit FRTSCameraUpdateStrategyFree(ATundraPlayerController* PlayerController);
@@ -30,7 +29,7 @@ public:
 	virtual void UpdateCameraPosition(float DeltaTime) override;
 };
 
-class FRTSCameraUpdateStrategyAnchored final : public RTSCameraUpdateStrategy
+class FRTSCameraUpdateStrategyAnchored final : public FRTSCameraUpdateStrategy
 {
 	float MoveVelocityModifier;
 	FVector AnchorWorldPosition;

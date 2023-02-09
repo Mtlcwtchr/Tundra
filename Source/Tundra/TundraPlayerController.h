@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Camera/CameraActor.h"
-#include "Camera/RTSCameraUpdateStrategy.h"
+#include "Camera/FRTSCameraUpdateStrategy.h"
 #include "GameFramework/PlayerController.h"
 #include "TundraPlayerController.generated.h"
 
@@ -23,7 +23,7 @@ class ATundraPlayerController : public APlayerController
 	class FRTSCameraUpdateStrategyFree* CameraUpdateStrategyFree;
 	class FRTSCameraUpdateStrategyAnchored* CameraUpdateStrategyAnchored;
 
-	class RTSCameraUpdateStrategy* CameraUpdateStrategyCurrent;
+	class FRTSCameraUpdateStrategy* CameraUpdateStrategyCurrent;
 
 public:
 	ATundraPlayerController();

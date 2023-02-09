@@ -4,11 +4,11 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
-#include "GameFramework/PawnMovementComponent.h"
 
 ATundraPlayerPawn::ATundraPlayerPawn()
 {
@@ -16,6 +16,11 @@ ATundraPlayerPawn::ATundraPlayerPawn()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+	
+	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
+	SetRootComponent(CollisionSphere);
+	CollisionSphere->InitSphereRadius(32.0f);
+	CollisionSphere->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
 	
 	// Create a camera boom...
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));

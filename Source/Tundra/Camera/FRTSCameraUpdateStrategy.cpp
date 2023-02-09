@@ -1,22 +1,23 @@
-﻿#include "RTSCameraUpdateStrategy.h"
+﻿#include "FRTSCameraUpdateStrategy.h"
+#include "Tundra/TundraPlayerController.h"
 
-RTSCameraUpdateStrategy::RTSCameraUpdateStrategy(ATundraPlayerController* PlayerController)
+FRTSCameraUpdateStrategy::FRTSCameraUpdateStrategy(ATundraPlayerController* PlayerController)
 {
 	this->PlayerController = PlayerController;
 	ReactThresholdVector = FVector::ZeroVector;
 	MoveVelocity = 0.0f;
 }
 
-FRTSCameraUpdateStrategyFree::FRTSCameraUpdateStrategyFree(ATundraPlayerController* PlayerController) : RTSCameraUpdateStrategy(PlayerController)
+FRTSCameraUpdateStrategyFree::FRTSCameraUpdateStrategyFree(ATundraPlayerController* PlayerController) : FRTSCameraUpdateStrategy(PlayerController)
 {
 }
 
-FRTSCameraUpdateStrategyAnchored::FRTSCameraUpdateStrategyAnchored(ATundraPlayerController* PlayerController) : RTSCameraUpdateStrategy(PlayerController)
+FRTSCameraUpdateStrategyAnchored::FRTSCameraUpdateStrategyAnchored(ATundraPlayerController* PlayerController) : FRTSCameraUpdateStrategy(PlayerController)
 {
 	MoveVelocityModifier = 0.0f;
 }
 
-RTSCameraUpdateStrategy::~RTSCameraUpdateStrategy()
+FRTSCameraUpdateStrategy::~FRTSCameraUpdateStrategy()
 {
 	PlayerController = nullptr;
 }
@@ -29,12 +30,12 @@ FRTSCameraUpdateStrategyAnchored::~FRTSCameraUpdateStrategyAnchored()
 {
 }
 
-void RTSCameraUpdateStrategy::SetReactThresholdVector(FVector Value)
+void FRTSCameraUpdateStrategy::SetReactThresholdVector(FVector Value)
 {
 	ReactThresholdVector = Value;
 }
 
-void RTSCameraUpdateStrategy::SetMoveVelocity(float Value)
+void FRTSCameraUpdateStrategy::SetMoveVelocity(float Value)
 {
 	MoveVelocity = Value;
 }
