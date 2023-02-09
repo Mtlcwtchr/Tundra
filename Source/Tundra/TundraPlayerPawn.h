@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "TundraCharacter.generated.h"
+#include "TundraPlayerPawn.generated.h"
 
 UCLASS(Blueprintable)
-class ATundraCharacter : public ACharacter
+class ATundraPlayerPawn : public APawn
 {
 	GENERATED_BODY()
 
 public:
-	ATundraCharacter();
+	ATundraPlayerPawn();
 
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;

@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CameraActor.h"
+#include "Camera/RTSCameraUpdateStrategy.h"
 #include "GameFramework/PlayerController.h"
 #include "TundraPlayerController.generated.h"
 
@@ -13,24 +15,25 @@ class ATundraPlayerController : public APlayerController
 
 	FVector CameraAnchor;
 
-	FVector2D CameraMoveThreshold;
+	FVector CameraMoveThreshold;
 	
 	float CameraMoveVelocity;
+	float CameraMoveVelocityAnchoredModifier;
+
+	class FRTSCameraUpdateStrategyFree* CameraUpdateStrategyFree;
+	class FRTSCameraUpdateStrategyAnchored* CameraUpdateStrategyAnchored;
+
+	class RTSCameraUpdateStrategy* CameraUpdateStrategyCurrent;
 
 public:
 	ATundraPlayerController();
 
 protected:
-	uint32 bCameraAnchored : 1;
-
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 
-	void SetCameraAnchor();
+	void SetupCameraAnchor();
 	void ReleaseCameraAnchor();
-	
-	void UpdateCameraPosition(float DeltaTime) const;
-	void UpdateCameraPositionAnchored(float DeltaTime) const;
 };
 
 
