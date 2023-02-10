@@ -1,12 +1,12 @@
 ﻿#pragma once
 
-class FRTSCameraUpdateStrategy
+class FCameraUpdateStrategyRTS
 {
 	class ATundraPlayerController* PlayerController;
 	
 public:
-	explicit FRTSCameraUpdateStrategy(ATundraPlayerController* PlayerController);
-	virtual ~FRTSCameraUpdateStrategy();
+	explicit FCameraUpdateStrategyRTS(ATundraPlayerController* PlayerController);
+	virtual ~FCameraUpdateStrategyRTS();
 	
 	virtual void UpdateCameraPosition(float DeltaTime) = 0;
 	
@@ -20,23 +20,21 @@ protected:
 	class ATundraPlayerController* GetPlayerController() const { return PlayerController; }
 };
 
-class FRTSCameraUpdateStrategyFree final : public FRTSCameraUpdateStrategy
+class FCameraUpdateStrategyFreeRTS final : public FCameraUpdateStrategyRTS
 {
 public:
-	explicit FRTSCameraUpdateStrategyFree(ATundraPlayerController* PlayerController);
-	~FRTSCameraUpdateStrategyFree();
+	explicit FCameraUpdateStrategyFreeRTS(ATundraPlayerController* PlayerController);
 	
 	virtual void UpdateCameraPosition(float DeltaTime) override;
 };
 
-class FRTSCameraUpdateStrategyAnchored final : public FRTSCameraUpdateStrategy
+class FCameraUpdateStrategyAnchoredRTS final : public FCameraUpdateStrategyRTS
 {
 	float MoveVelocityModifier;
 	FVector AnchorWorldPosition;
 	
 public:
-	explicit FRTSCameraUpdateStrategyAnchored(ATundraPlayerController* PlayerController);
-	~FRTSCameraUpdateStrategyAnchored();
+	explicit FCameraUpdateStrategyAnchoredRTS(ATundraPlayerController* PlayerController);
 	
 	virtual void UpdateCameraPosition(float DeltaTime) override;
 

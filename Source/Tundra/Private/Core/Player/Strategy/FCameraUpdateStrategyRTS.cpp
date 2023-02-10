@@ -1,46 +1,38 @@
-﻿#include "FRTSCameraUpdateStrategy.h"
-#include "Tundra/TundraPlayerController.h"
+﻿#include "Tundra/Public/Core/Player/Strategy/FCameraUpdateStrategyRTS.h"
+#include "Tundra/Public/Core/Player/Controller/TundraPlayerController.h"
 
-FRTSCameraUpdateStrategy::FRTSCameraUpdateStrategy(ATundraPlayerController* PlayerController)
+FCameraUpdateStrategyRTS::FCameraUpdateStrategyRTS(ATundraPlayerController* PlayerController)
 {
 	this->PlayerController = PlayerController;
 	ReactThresholdVector = FVector::ZeroVector;
 	MoveVelocity = 0.0f;
 }
 
-FRTSCameraUpdateStrategyFree::FRTSCameraUpdateStrategyFree(ATundraPlayerController* PlayerController) : FRTSCameraUpdateStrategy(PlayerController)
+FCameraUpdateStrategyFreeRTS::FCameraUpdateStrategyFreeRTS(ATundraPlayerController* PlayerController) : FCameraUpdateStrategyRTS(PlayerController)
 {
 }
 
-FRTSCameraUpdateStrategyAnchored::FRTSCameraUpdateStrategyAnchored(ATundraPlayerController* PlayerController) : FRTSCameraUpdateStrategy(PlayerController)
+FCameraUpdateStrategyAnchoredRTS::FCameraUpdateStrategyAnchoredRTS(ATundraPlayerController* PlayerController) : FCameraUpdateStrategyRTS(PlayerController)
 {
 	MoveVelocityModifier = 0.0f;
 }
 
-FRTSCameraUpdateStrategy::~FRTSCameraUpdateStrategy()
+FCameraUpdateStrategyRTS::~FCameraUpdateStrategyRTS()
 {
 	PlayerController = nullptr;
 }
 
-FRTSCameraUpdateStrategyFree::~FRTSCameraUpdateStrategyFree()
-{
-}
-
-FRTSCameraUpdateStrategyAnchored::~FRTSCameraUpdateStrategyAnchored()
-{
-}
-
-void FRTSCameraUpdateStrategy::SetReactThresholdVector(FVector Value)
+void FCameraUpdateStrategyRTS::SetReactThresholdVector(FVector Value)
 {
 	ReactThresholdVector = Value;
 }
 
-void FRTSCameraUpdateStrategy::SetMoveVelocity(float Value)
+void FCameraUpdateStrategyRTS::SetMoveVelocity(float Value)
 {
 	MoveVelocity = Value;
 }
 
-void FRTSCameraUpdateStrategyFree::UpdateCameraPosition(float DeltaTime)
+void FCameraUpdateStrategyFreeRTS::UpdateCameraPosition(float DeltaTime)
 {
 	float MouseX;
 	float MouseY;
@@ -54,7 +46,7 @@ void FRTSCameraUpdateStrategyFree::UpdateCameraPosition(float DeltaTime)
 	}
 }
 
-void FRTSCameraUpdateStrategyAnchored::UpdateCameraPosition(float DeltaTime)
+void FCameraUpdateStrategyAnchoredRTS::UpdateCameraPosition(float DeltaTime)
 {
 	FHitResult TraceHitResult;
 	GetPlayerController()->GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
@@ -63,12 +55,12 @@ void FRTSCameraUpdateStrategyAnchored::UpdateCameraPosition(float DeltaTime)
 	GetPlayerController()->GetPawn()->AddMovementInput(-AnchoredOffset.GetSafeNormal(FLT_EPSILON), MoveVelocity * MoveVelocityModifier * DeltaTime);
 }
 
-void FRTSCameraUpdateStrategyAnchored::SetMoveVelocityModifier(float Value)
+void FCameraUpdateStrategyAnchoredRTS::SetMoveVelocityModifier(float Value)
 {
 	MoveVelocityModifier = Value;
 }
 
-void FRTSCameraUpdateStrategyAnchored::SetAnchorWorldPosition(FVector Value)
+void FCameraUpdateStrategyAnchoredRTS::SetAnchorWorldPosition(FVector Value)
 {
 	AnchorWorldPosition = Value;
 }

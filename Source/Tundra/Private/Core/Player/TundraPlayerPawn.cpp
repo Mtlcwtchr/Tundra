@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "TundraPlayerPawn.h"
+#include "Tundra/Public/Core/Player/TundraPlayerPawn.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -12,6 +12,15 @@
 
 ATundraPlayerPawn::ATundraPlayerPawn()
 {
+	ZoomSpeed = 100;
+	ZoomRotationSpeed = 10;
+
+	MinArmLength = 400.f;
+	MaxArmLength = 2600.f;
+
+	MinArmPitch = -90.f;
+	MaxArmPitch = -30.f;
+	
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -58,6 +67,24 @@ void ATundraPlayerPawn::Tick(float DeltaSeconds)
     const FVector InputVector = ConsumeMovementInputVector();
 	AddActorLocalOffset(InputVector);
 
+	float ZoomInput;
+	if(ConsumeZoomInput(ZoomInput))
+	{
+		const float AddLength = ZoomSpeed * -ZoomInput;
+		const float NewArmLength = GetCameraBoom()->TargetArmLength + AddLength;
+		if(NewArmLength >= MinArmLength && NewArmLength <= MaxArmLength)
+		{
+			GetCameraBoom()->TargetArmLength = NewArmLength;
+		}
+
+		const float AddPitch = ZoomRotationSpeed * -ZoomInput;
+		const float NewArmPitch = GetCameraBoom()->GetRelativeRotation().Pitch + AddPitch;
+		if(NewArmPitch >= MinArmPitch && NewArmPitch <= MaxArmPitch)
+		{
+			GetCameraBoom()->GetRelativeRotation().Add(AddPitch, 0.0f, 0.0f);
+		}
+	}
+
 	if (CursorToWorld != nullptr)
 	{
 		if (APlayerController* PC = Cast<APlayerController>(GetController()))
@@ -70,4 +97,23 @@ void ATundraPlayerPawn::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
+}
+
+void ATundraPlayerPawn::AddZoomInput(float Value)
+{
+	OrderedZoomInput = Value;
+	bZoomInputConsumed = 0;
+}
+
+uint8 ATundraPlayerPawn::ConsumeZoomInput(float& Value)
+{
+	if(!bZoomInputConsumed)
+	{
+		Value = OrderedZoomInput;
+		OrderedZoomInput = 0;
+		bZoomInputConsumed = 1;
+		return 1;
+	}
+
+	return 0;
 }
