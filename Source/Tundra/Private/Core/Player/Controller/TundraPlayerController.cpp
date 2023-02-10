@@ -1,47 +1,45 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Tundra/Public/Core/Player/Controller/TundraPlayerController.h"
-#include "Tundra/Public/Core/Player/Strategy/FCameraUpdateStrategyRTS.h"
-#include "Engine/World.h"
 #include "Tundra/Public/Core/Player/TundraPlayerPawn.h"
+#include "Tundra/Public/Core/Player/Strategy/FTundraPlayerPawnNavStrategy.h"
+#include "Engine/World.h"
 
 ATundraPlayerController::ATundraPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 
-	CameraUpdateDelay = 2.4f;
+	PawnStaticTime = 0.6f;
 
-	CameraMoveThreshold = FVector(100.0f, 100.0f, 0.0f);
-	CameraMoveVelocity = 20.0f;
-	CameraMoveVelocityAnchoredModifier = 10.0f;
+	PawnVelocity = 1.0f;
+	PawnVelocityZoomFactor = 0.01f;
 
-	CameraUpdateStrategyFree = new FCameraUpdateStrategyFreeRTS(this);
-	CameraUpdateStrategyFree->SetMoveVelocity(CameraMoveVelocity);
-	CameraUpdateStrategyFree->SetReactThresholdVector(CameraMoveThreshold);
+	PawnNavStrategyByScreenBorders = new FTundraPlayerPawnNavStrategyByScreenBorders(this);
+	PawnNavStrategyByScreenBorders->SetOffsets(100.0f, 100.0f);
 	
-	CameraUpdateStrategyAnchored = new FCameraUpdateStrategyAnchoredRTS(this);
-	CameraUpdateStrategyAnchored->SetMoveVelocity(CameraMoveVelocity);
-	CameraUpdateStrategyAnchored->SetReactThresholdVector(CameraMoveThreshold);
-	CameraUpdateStrategyAnchored->SetMoveVelocityModifier(CameraMoveVelocityAnchoredModifier);
+	PawnNavStrategyByAnchor = new FTundraPlayerPawnNavStrategyByAnchor(this);
 
-	CameraUpdateStrategyCurrent = CameraUpdateStrategyFree;
+	PawnNavStrategy = PawnNavStrategyByScreenBorders;
 }
 
 void ATundraPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-
-	if(!bCameraUpdateDelayed)
+	
+	if(!bPawnForcedStatic)
 	{
-		CameraUpdateStrategyCurrent->UpdateCameraPosition(DeltaTime);
+		GetPawn()->AddMovementInput(
+			PawnNavStrategy->GetNavVector(),
+			PawnVelocity * Cast<ATundraPlayerPawn>(GetPawn())->GetArmLength()  * PawnVelocityZoomFactor);
 	}
 	else
 	{
 		TimePassed += DeltaTime;
-		if(TimePassed >= CameraUpdateDelay)
+		if(TimePassed >= PawnStaticTime)
 		{
-			bCameraUpdateDelayed = 0;
+			TimePassed = 0;
+			bPawnForcedStatic = 0;
 		}
 	}
 }
@@ -61,15 +59,15 @@ void ATundraPlayerController::SetupCameraAnchor()
 	FHitResult TraceHitResult;
 	GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
 	const FVector CameraAnchor = TraceHitResult.Location;
-	CameraUpdateStrategyAnchored->SetAnchorWorldPosition(CameraAnchor);
-	CameraUpdateStrategyCurrent = CameraUpdateStrategyAnchored;
+	PawnNavStrategyByAnchor->SetAnchorVector(CameraAnchor);
+	PawnNavStrategy = PawnNavStrategyByAnchor;
 }
 
 void ATundraPlayerController::ReleaseCameraAnchor()
 {
-	CameraUpdateStrategyCurrent = CameraUpdateStrategyFree;
-	CameraUpdateStrategyAnchored->SetAnchorWorldPosition(FVector::ZeroVector);
-	bCameraUpdateDelayed = 1;
+	PawnNavStrategy = PawnNavStrategyByScreenBorders;
+	PawnNavStrategyByAnchor->SetAnchorVector(FVector::ZeroVector);
+	bPawnForcedStatic = 1;
 }
 
 void ATundraPlayerController::Zoom(float Value)

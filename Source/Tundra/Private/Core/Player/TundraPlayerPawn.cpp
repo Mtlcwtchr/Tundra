@@ -21,6 +21,9 @@ ATundraPlayerPawn::ATundraPlayerPawn()
 	MinArmPitch = -90.f;
 	MaxArmPitch = -30.f;
 	
+	DefaultArmLength = 800.f;
+	DefaultCameraRotation = FRotator(-60.f, 0.f, 0.f);
+	
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -35,8 +38,8 @@ ATundraPlayerPawn::ATundraPlayerPawn()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
-	CameraBoom->TargetArmLength = 800.f;
-	CameraBoom->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
+	CameraBoom->TargetArmLength = DefaultArmLength;
+	CameraBoom->SetRelativeRotation(DefaultCameraRotation);
 	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
 
 	// Create a camera...
@@ -87,12 +90,12 @@ void ATundraPlayerPawn::Tick(float DeltaSeconds)
 
 	if (CursorToWorld != nullptr)
 	{
-		if (APlayerController* PC = Cast<APlayerController>(GetController()))
+		if (const APlayerController* PC = Cast<APlayerController>(GetController()))
 		{
 			FHitResult TraceHitResult;
 			PC->GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
-			FVector CursorFV = TraceHitResult.ImpactNormal;
-			FRotator CursorR = CursorFV.Rotation();
+			const FVector CursorFV = TraceHitResult.ImpactNormal;
+			const FRotator CursorR = CursorFV.Rotation();
 			CursorToWorld->SetWorldLocation(TraceHitResult.Location);
 			CursorToWorld->SetWorldRotation(CursorR);
 		}

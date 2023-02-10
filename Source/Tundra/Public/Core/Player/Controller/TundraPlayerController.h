@@ -11,19 +11,16 @@ class ATundraPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-	FVector CameraMoveThreshold;
-
-	float CameraMoveVelocity;
-	float CameraMoveVelocityAnchoredModifier;
-
-	class FCameraUpdateStrategyFreeRTS* CameraUpdateStrategyFree;
-	class FCameraUpdateStrategyAnchoredRTS* CameraUpdateStrategyAnchored;
-
-	class FCameraUpdateStrategyRTS* CameraUpdateStrategyCurrent;
-
+	float PawnVelocity;
+	float PawnVelocityZoomFactor;
 	
-	uint8 bCameraUpdateDelayed : 1;
-	float CameraUpdateDelay;
+	class FTundraPlayerPawnNavStrategyByScreenBorders* PawnNavStrategyByScreenBorders;
+	class FTundraPlayerPawnNavStrategyByAnchor* PawnNavStrategyByAnchor;
+	
+	class FTundraPlayerPawnNavStrategy* PawnNavStrategy;
+	
+	uint8 bPawnForcedStatic : 1;
+	float PawnStaticTime;
 	float TimePassed;
 
 public:

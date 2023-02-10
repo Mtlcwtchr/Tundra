@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "TundraPlayerPawn.generated.h"
 
 UCLASS(Blueprintable)
@@ -36,15 +37,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Getters)
 	FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
-	
+
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Getters)
-	FORCEINLINE float GetDefaultArmLength() const { return DefaultArmLength;}
+	FORCEINLINE float GetArmLength() const { return CameraBoom->TargetArmLength;}
 	
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Getters)
-	FORCEINLINE FRotator GetDefaultCameraRotation() const { return DefaultCameraRotation;}
-	
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Getters)
-	FORCEINLINE float GetZoomSpeed() const { return ZoomSpeed;}
 	
 	virtual void AddZoomInput(float Value);
 
